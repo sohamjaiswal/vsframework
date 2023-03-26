@@ -18,8 +18,30 @@
 </script>
 
 
-<h1>Controller!</h1>
+<div class="center">
+    <h1>Controller! (Gallery View)</h1>
+    
+    <button on:click={handleButtPress}>
+        Switch Image
+    </button>
+</div>
 
-<button on:click={handleButtPress}>
-    Switch Image
-</button>
+<style lang="scss">
+    .center {
+        font-family: 'Courier New', Courier, monospace;
+        width: 100%;
+        height: 80vh;
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+        align-items: center;
+        gap: 2rem;
+        button {
+            outline: none;
+            padding: 1rem 2rem;
+            background-color: rgb(255, 114, 114);
+            color: white;
+            border-radius: 2rem;
+        }
+    }
+</style>
