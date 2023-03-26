@@ -7,9 +7,12 @@ import { lgArrange } from '../../utils/lgArrange.utils';
 
 export const setImg = asyncHandler(async (req: Request, res: Response) => {
     const stuff = req.body as IImage;
-    console.log(stuff)
-    ; (await globals).image.image = stuff.image;
-    io.emit('image_update', { data: "image changed" });
+    console.log(stuff);
+    (await globals).image.image = stuff.image;
+    (await globals).instanceImages.reset()
+    setTimeout(async () => {
+        io.emit('image_update', { data: "image changed" });
+    }, 1000)
     res.json({})
 })
 
@@ -20,7 +23,6 @@ export const getImg = asyncHandler(async (req: Request, res: Response) => {
         const screenToImageMap = new Map<number, string>()
         const images = await (await globals).instanceImages.reset()
         screenMapper.forEach(async (k, i) => {
-            console.log(images[i])
             screenToImageMap.set(k, images[i])
         })
         res.json({image: `${screenToImageMap.get(screenId)}`})

@@ -5,14 +5,13 @@
 	import { onMount } from 'svelte';
     import io from 'socket.io-client';
 	import {axios} from '$lib/utils/axios.utils';
-	import { get } from 'svelte/store';
 	import { SCREEN_COUNT } from '$lib/config/config';
 
     const socket = io('http://localhost:8081')
 
     socket.emit('connection')
 
-    export let data;
+    export let data: PageData;
     
     let innerHeight: number;
     let innerWidth: number;
@@ -20,12 +19,6 @@
     $: useWidth = $viewportWidth
 
     let image: string;
-
-    socket.on('image_update', async() => {
-        setTimeout(async() => {
-            image = (await axios.get('/image'))['data']['image']
-        }, 1000)
-    })
     
     viewportHeight.subscribe(value => {
         useHeight = value
@@ -36,6 +29,14 @@
     })
     
     onMount(async() => {
+        socket.on('image_update', async() => {
+        image = (await axios.get('/image'))['data']['image']
+            setTimeout(() => {
+                $: {
+                    location.reload()
+                }
+            }, 500)
+        })
         await axios.post('/resolution', {height: innerHeight, width: innerWidth, screens: SCREEN_COUNT})
         console.log("sent res!")
         image = (await axios.get(`/image/${data.id}`))['data']['image']

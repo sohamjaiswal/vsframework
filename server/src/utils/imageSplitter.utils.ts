@@ -23,9 +23,9 @@ export const imageSplitter = async (totalWidth: Promise<number> | number, totalH
         const height = (await globals).window.resY
         const top = 0
         const left = i * (await globals).window.resX
-        const currImg = await resizedImage.extract({ width, height, top, left }).toFile(path.join(__dirname, '../cache', `${i}.jpg`))
+        const currImg = await resizedImage.extract({ width, height, top, left }).toFile(path.join(__dirname, '../cache', `${i}.png`))
 
-        images.push(`http://localhost:${port}/cache/${i}.jpg`)
+        images.push(`http://localhost:${port}/cache/${i}.png`)
     }
     return images
 }
