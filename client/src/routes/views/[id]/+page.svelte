@@ -11,6 +11,8 @@
     const socket = io('http://localhost:8081')
 
     socket.emit('connection')
+
+    export let data;
     
     let innerHeight: number;
     let innerWidth: number;
@@ -18,12 +20,6 @@
     $: useWidth = $viewportWidth
 
     let image: string;
-
-    $: sockPresses = 0;
-
-    socket.on('send_con_pressed', () => {
-        sockPresses += 1
-    })
 
     socket.on('image_update', async() => {
         image = (await axios.get('/image'))['data']['image']
@@ -38,14 +34,15 @@
     })
     
     onMount(async() => {
-        axios.post('/resolution', {height: innerHeight, width: innerWidth, screens: SCREEN_COUNT})
+        await axios.post('/resolution', {height: innerHeight, width: innerWidth, screens: SCREEN_COUNT})
         console.log("sent res!")
-        image = (await axios.get('/image'))['data']['image']
+        image = (await axios.get(`/image/${data.id}`))['data']['image']
+        console.log(image)
         viewportHeight.set(`${innerHeight}px`)
         viewportWidth.set(`${innerWidth}px`)
     })
     
 </script>
 <!-- <h1>{Number(data.id)+ sockPresses}</h1> -->
-<img src={image} alt="Anime thingy" style={`height: ${useHeight}; width: ${useWidth}`} />
+<img src={`data:image/png;base64,${image}`} alt="Anime thingy" style={`height: ${useHeight}; width: ${useWidth}`} />
 <svelte:window bind:innerHeight={innerHeight} bind:innerWidth={innerWidth} />

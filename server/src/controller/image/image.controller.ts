@@ -1,40 +1,30 @@
 import asyncHandler = require('express-async-handler')
 import { Request, Response } from 'express';
 import { IImage } from './image.types';
-import { globals, port, io } from '../../main';
-
-import {default as getImgSize} from 'image-size'
+import { globals, io } from '../../main';
 import path = require('path');
-import sharp = require('sharp');
+import { lgArrange } from '../../utils/lgArrange.utils';
 
 export const setImg = asyncHandler(async (req: Request, res: Response) => {
-    const stuff = req.body as IImage
-    io.emit('image_update', {data:`${stuff.image}.jpg`})
-    globals.image.image = `${stuff.image}.jpg`
-    res.json({image: `http://localhost:${port}/images/${globals.image.image}`})
+    const stuff = req.body as IImage;
+    console.log(stuff)
+    ; (await globals).image.image = stuff.image;
+    io.emit('image_update', { data: "image changed" });
+    res.json({})
 })
 
 export const getImg = asyncHandler(async (req: Request, res: Response) => {
-    const totalWidth = globals.window.resX * globals.window.screens
-
-    console.log("details:", globals.window.resX, globals.window.screens ,totalWidth)
-    const totalHeight = globals.window.resY
-    const image = path.join(__dirname, '../../images/', globals.image.image)
-    const dimensions = getImgSize(image)
-    if (dimensions.width as number > totalWidth || dimensions.height as number > totalHeight) {
-        sharp(image)
-            .resize({
-                width: totalWidth,
-                height: totalHeight,
-                fit: "inside",
-                position: "center",
-                background: {
-                    r: 0,
-                    g: 0,
-                    b: 0,
-                    alpha: 0
-                }
-            })
+    if (req.params.screenId) {
+        const screenId = Number(req.params.screenId)
+        const screenMapper = lgArrange(Array.from({ length: (await globals).window.screens }, (_, i) => i + 1))
+        const screenToImageMap = new Map<number, string>()
+        const images = await (await globals).instanceImages.reset()
+        screenMapper.forEach(async (k, i) => {
+            console.log(images[i])
+            screenToImageMap.set(k, images[i])
+        })
+        res.json({image: `${screenToImageMap.get(screenId)}`})
+    } else {
+        res.json({error: "Screen ID required."})
     }
-    res.json({image: `http://localhost:${port}/images/${globals.image.image}`, screens: globals.window.screens})
 })

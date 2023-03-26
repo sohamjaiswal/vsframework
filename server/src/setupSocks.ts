@@ -4,7 +4,7 @@ let pressed = 0
 
 export default function(io: Server): void {
   io.on("connection", (socket: Socket) => {
-    console.log(`User Connected: ${socket.id}`)
+    // console.log(`User Connected: ${socket.id}`)
 
     socket.on("con_pressed", () => {
       pressed += 1

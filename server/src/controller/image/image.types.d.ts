@@ -1,3 +1,3 @@
 export interface IImage {
-    image: 1 | 2 | 3
+    image: 0 | 1 | 2
 }
