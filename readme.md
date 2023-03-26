@@ -16,6 +16,7 @@ The server manages most of the logic. It is a normal ExpressJS + Socket.io serve
 - [x] Displays Images
 - [x] Controller 
 - [x] Updates on controller interrupt 
+- [ ] Canvas maker/manipulator for multiple images at once
 
 ### Dev Checklist 
 - [x] Abstract control
