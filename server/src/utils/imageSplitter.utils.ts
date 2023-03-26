@@ -1,5 +1,5 @@
 import sharp from "sharp"
-import { globals } from "../main"
+import { globals, port } from "../main"
 
 import path from 'path'
 
@@ -23,9 +23,9 @@ export const imageSplitter = async (totalWidth: Promise<number> | number, totalH
         const height = (await globals).window.resY
         const top = 0
         const left = i * (await globals).window.resX
-        const currImg = await resizedImage.extract({ width, height, top, left }).toFormat('png').toBuffer()
+        const currImg = await resizedImage.extract({ width, height, top, left }).toFile(path.join(__dirname, '../cache', `${i}.jpg`))
 
-        images.push(currImg.toString('base64'))
+        images.push(`http://localhost:${port}/cache/${i}.jpg`)
     }
     return images
 }

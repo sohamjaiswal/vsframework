@@ -22,7 +22,9 @@
     let image: string;
 
     socket.on('image_update', async() => {
-        image = (await axios.get('/image'))['data']['image']
+        setTimeout(async() => {
+            image = (await axios.get('/image'))['data']['image']
+        }, 1000)
     })
     
     viewportHeight.subscribe(value => {
@@ -44,5 +46,5 @@
     
 </script>
 <!-- <h1>{Number(data.id)+ sockPresses}</h1> -->
-<img src={`data:image/png;base64,${image}`} alt="Anime thingy" style={`height: ${useHeight}; width: ${useWidth}`} />
+<img src={image} alt="Anime thingy" style={`height: ${useHeight}; width: ${useWidth}`} />
 <svelte:window bind:innerHeight={innerHeight} bind:innerWidth={innerWidth} />
