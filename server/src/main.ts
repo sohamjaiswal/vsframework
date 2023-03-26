@@ -7,19 +7,20 @@ import {default as http} from 'http'
 import {Server} from 'socket.io'
 import path from 'path';
 
+import {default as mahSocket} from './setupSocks'
 
 // Web requests and server shit
 dotenv.config();
 
 const app: Express = express();
-const port = process.env.PORT as string;
+export const port = process.env.PORT as string;
 
 export const globals = setupGlobals()
 
 
 app.use(cors())
 app.use(express.json())
-app.use('/images', express.static('images'))
+app.use('/images', express.static(path.join(__dirname, 'images')))
 app.use(routes)
 
 app.get('/', (req: Request, res: Response) => {
@@ -44,13 +45,4 @@ server.listen(Number(port) + 1, () => {
   console.log(`🔌[sockets]: Server is running at http://localhost:${Number(port) + 1}`)
 })
 
-let pressed = 0
-
-io.on("connection", (socket) => {
-  console.log(`User Connected: ${socket.id}`)
-
-  socket.on("con_pressed", () => {
-    pressed += 1
-    socket.broadcast.emit("send_con_pressed", pressed)
-  })
-})
+mahSocket(io)
